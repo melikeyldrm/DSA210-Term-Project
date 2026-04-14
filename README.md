@@ -9,24 +9,47 @@ After my family switched to electric vehicles, range anxiety — the fear of run
 As electric vehicle adoption continues to increase, the availability and distribution of public charging stations become increasingly important. This project aims to explore the current state of EV charging infrastructure in Turkey, evaluate its adequacy across different regions, and examine how well it supports the rapid growth of electric vehicles.
 
 ## Data Sources
-The project utilizes dynamically acquired API data and official statistics:
-- **sarj.dev API** — Primary data source providing real-time geographic coordinates (latitude/longitude) and operator metadata for thousands of active EV charging stations across Turkey.
-- **Turkey Provincial GeoJSON** — Spatial boundary data used to accurately map and assign charging station coordinates to specific provinces via spatial join techniques.
-- **TÜİK (Turkish Statistical Institute)** — Provincial-level transportation data (registered EVs) and population statistics, used to normalize infrastructure metrics (e.g., stations per capita, stations per EV).
-- **IEA (International Energy Agency)** — Global EV Data Explorer statistics for macro-level EV adoption trends and historical benchmarks.
+
+ 
+| File | Source | Description | Year |
+|------|--------|-------------|------|
+| `(Mart 2026) Hangi şehirde kaç tane elektrikli araç şarj istasyonu var.xlsx` | Donanım Haber (source: EPDK — Energy Market Regulatory Authority) | Provincial charging station counts derived from EPDK's official licensing registry (`lisans.epdk.gov.tr`), compiled and published by Donanım Haber (14,811 total stations) | March 2026 |
+| `Cinsiyete Göre Nüfus_nip.tuik.xlsx` | TÜİK — ADNKS | Province-level population data | 2025 |
+| `İllere göre motorlu kara taşıtları sayısı.xls` | TÜİK | Road motor vehicles by province (81 provinces, 12 vehicle categories) | 2026 |
+| `Motorlu Kara Taşıt Sayısı.xls` | TÜİK | National annual time series of registered vehicles by type | 1966–2026 |
+| `Trafiğe Kayıtlı Otomobillerin Yakıt Cinsine Göre Dağılımı.xls` | TÜİK | National annual breakdown of registered cars by fuel type (gasoline, diesel, LPG, hybrid, electric) | 2004–2026 |
+| `EV Data Explorer 2025.xlsx` | IEA | Country-level EV stock, sales, and public charging point counts; Turkey has 154 historical records | 2012–2024 |
+ 
 
 ## Planned Analysis
-The analysis will include the following steps:
-- Data collection and preprocessing (including spatial mapping of API coordinates)
-- Exploratory Data Analysis (EDA)
-- Visualization of charging station distribution across Turkey
-- Comparison between regional EV growth and charging infrastructure
-- Hypothesis testing on infrastructure readiness
-- Machine learning models (e.g., clustering regions by infrastructure coverage)
-
+ 
+**Stage 1 — Data cleaning and integration**
+- Merge provincial charging station counts with TÜİK vehicle and population data
+- Compute infrastructure adequacy metrics: stations per 10,000 registered cars, stations per 100,000 population
+ 
+**Stage 2 — Exploratory Data Analysis**
+- National EV and hybrid growth trends (2004–2026) from fuel-type time series
+- Geographic distribution of charging stations across 81 provinces
+- IEA international comparison for Turkey's EV trajectory
+ 
+**Stage 3 — Statistical testing and ML**
+- Hypothesis tests: is infrastructure significantly concentrated in a few provinces? Has charger growth kept up with EV adoption?
+- K-means clustering of provinces by infrastructure readiness profile
+- Regression model: station density as a function of vehicle stock and population
+ 
+---
+ 
 ## Tools
-- Python
-- Pandas & GeoPandas (for spatial data processing)
-- Requests (for API data acquisition)
-- Matplotlib / Seaborn
-- Scikit-learn
+ 
+- **Python** — all analysis and modeling
+- **Pandas** — data cleaning and integration
+- **Matplotlib / Seaborn / Folium** — visualization and provincial maps
+- **Scikit-learn** — clustering and regression
+- **Statsmodels** — hypothesis testing
+ 
+---
+## Notes on Data Limitations
+ 
+- The Donanım Haber charging station dataset (March 2026) aggregates figures from operator websites and may not capture every private or semi-public station.
+- The sarj.dev API (used in early exploration) returned 8,895 records without explicit timestamps; it was replaced by the Donanım Haber dataset for greater reliability and recency.
+- Provincial vehicle data and population are from 2024; the charging station snapshot is from March 2026. This small temporal gap is acknowledged as a limitation.
